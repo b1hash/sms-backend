@@ -31,6 +31,12 @@ build_backend:
         </mirrors>
       </settings>
       EOF
+    - |
+      for jar in libs/*.jar; do
+        filename=$(basename "$jar")
+        artifactId=$(echo "$filename" | sed 's/-1.0-SNAPSHOT.jar//')
+        mvn install:install-file -Dfile="$jar" -DgroupId="com.pd" -DartifactId="$artifactId" -Dversion="1.0-SNAPSHOT" -Dpackaging=jar
+      done
   script:
     - mvn clean compile
   artifacts:
@@ -83,6 +89,12 @@ test_backend:
         </mirrors>
       </settings>
       EOF
+    - |
+      for jar in libs/*.jar; do
+        filename=$(basename "$jar")
+        artifactId=$(echo "$filename" | sed 's/-1.0-SNAPSHOT.jar//')
+        mvn install:install-file -Dfile="$jar" -DgroupId="com.pd" -DartifactId="$artifactId" -Dversion="1.0-SNAPSHOT" -Dpackaging=jar
+      done
   script:
     - mvn test
   dependencies:
@@ -114,6 +126,12 @@ package_backend:
         </mirrors>
       </settings>
       EOF
+    - |
+      for jar in libs/*.jar; do
+        filename=$(basename "$jar")
+        artifactId=$(echo "$filename" | sed 's/-1.0-SNAPSHOT.jar//')
+        mvn install:install-file -Dfile="$jar" -DgroupId="com.pd" -DartifactId="$artifactId" -Dversion="1.0-SNAPSHOT" -Dpackaging=jar
+      done
   script:
     - mvn clean package -DskipTests
   artifacts:
