@@ -26,7 +26,7 @@ spring:
     type: REDIS
   redis:
     database: 1
-    password: yueliminvc@outlook.com
+    password: 780467asd
     timeout: 10000ms
     lettuce:
       pool:
@@ -37,9 +37,9 @@ spring:
     sentinel:
       master: mymaster
       nodes:
-        - 192.168.158.160:26379
-        - 192.168.158.160:26380
-        - 192.168.158.160:26381
+        - 172.20.0.10:26379
+        - 172.20.0.9:26380
+        - 172.20.0.8:26381
     queue:
       pop:
         timeout: 8000

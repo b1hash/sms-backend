@@ -1,11 +1,11 @@
 sms:
   mysql:
-    ip: 192.168.158.160
+    ip: 172.20.0.5
     port: 3306
     driverClassName: com.mysql.cj.jdbc.Driver
     database: sms
     username: root
-    password: yueliminvc@outlook.com
+    password: b1hash@outlook.com
   database:
     # 是否启用 攻击 SQL 阻断解析器
     isBlockAttack: false

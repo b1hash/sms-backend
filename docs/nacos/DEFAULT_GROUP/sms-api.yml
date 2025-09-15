@@ -27,7 +27,7 @@ spring:
   redis:
     # Redis数据库索引(默认为0)
     database: 1
-    password: yueliminvc@outlook.com
+    password: 780467asd
     # 连接超时时间(毫秒)默认是2000ms
     timeout: 10000ms
     lettuce:
@@ -44,6 +44,6 @@ spring:
       master: mymaster
       # 哨兵地址列表, 多个以, 分割
       nodes:
-        - 192.168.158.160:26379
-        - 192.168.158.160:26380
-        - 192.168.158.160:26381
+        - 172.20.0.10:26379
+        - 172.20.0.9:26380
+        - 172.20.0.8:26381
