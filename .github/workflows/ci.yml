@@ -1,186 +1,174 @@
-name: CI
+name: CI Pipeline
 
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
-  workflow_dispatch:
+  workflow_dispatch: # 支持手动触发
 
 jobs:
   build_backend:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 8
-      uses: actions/setup-java@v3
-      with:
-        java-version: '8'
-        distribution: 'temurin'
-    - name: Cache Maven packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
-    - name: Install local libs
-      run: |
-        mkdir -p ~/.m2
-        cat > ~/.m2/settings.xml << EOF
-        <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
-                                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
-          <mirrors>
-            <mirror>
-              <id>itheima</id>
-              <mirrorOf>itheima</mirrorOf>
-              <url>http://repo.itheima.net/repository/maven-public/</url>
-              <blocked>false</blocked>
-            </mirror>
-          </mirrors>
-        </settings>
-        EOF
-        for jar in libs/*.jar; do
-          filename=$(basename "$jar")
-          artifactId=$(echo "$filename" | sed 's/-1.0-SNAPSHOT.jar//')
-          mvn install:install-file -Dfile="$jar" -DgroupId="com.pd" -DartifactId="$artifactId" -Dversion="1.0-SNAPSHOT" -Dpackaging=jar
-        done
-    - name: Build with Maven
-      run: mvn clean compile
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: backend-target
-        path: target/
+      - uses: actions/checkout@v3
+      - name: Set up JDK 8
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+      - name: Set up Maven settings
+        run: |
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml << EOF
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                                        http://maven.apache.org/xsd/settings-1.0.0.xsd">
+            <mirrors>
+              <mirror>
+                <id>itheima</id>
+                <mirrorOf>itheima</mirrorOf>
+                <url>http://repo.itheima.net/repository/maven-public/</url>
+                <blocked>false</blocked>
+              </mirror>
+            </mirrors>
+          </settings>
+          EOF
+      - name: Install JARs
+        run: |
+          for jar in libs/*.jar; do
+            filename=$(basename "$jar")
+            artifactId=$(echo "$filename" | sed 's/-1.0-SNAPSHOT.jar//')
+            mvn install:install-file -Dfile="$jar" -DgroupId="com.pd" -DartifactId="$artifactId" -Dversion="1.0-SNAPSHOT" -Dpackaging=jar
+          done
+      - name: Maven Compile
+        run: mvn clean compile
+      - uses: actions/upload-artifact@v3
+        with:
+          name: backend-target
+          path: target/
 
   build_frontend:
     runs-on: ubuntu-latest
+    needs: build_backend
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '14'
-    - name: Unzip frontend
-      run: |
-        cd sms-ui
-        unzip project-sms-admin-v2-vue-ts.zip
-        cd project-sms-admin-v2-vue-ts
-    - name: Install dependencies
-      run: |
-        cd sms-ui/project-sms-admin-v2-vue-ts
-        npm install
-    - name: Build frontend
-      run: |
-        cd sms-ui/project-sms-admin-v2-vue-ts
-        npm run build
-    - name: Upload frontend artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: frontend-dist
-        path: sms-ui/project-sms-admin-v2-vue-ts/dist/
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - name: Build Frontend
+        run: |
+          cd sms-ui
+          unzip project-sms-admin-v2-vue-ts.zip
+          cd project-sms-admin-v2-vue-ts
+          npm install
+          npm run build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: frontend-dist
+          path: sms-ui/project-sms-admin-v2-vue-ts/dist/
 
   test_backend:
     runs-on: ubuntu-latest
     needs: build_backend
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 8
-      uses: actions/setup-java@v3
-      with:
-        java-version: '8'
-        distribution: 'temurin'
-    - name: Cache Maven packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
-    - name: Install local libs
-      run: |
-        mkdir -p ~/.m2
-        cat > ~/.m2/settings.xml << EOF
-        <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
-                                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
-          <mirrors>
-            <mirror>
-              <id>itheima</id>
-              <mirrorOf>itheima</mirrorOf>
-              <url>http://repo.itheima.net/repository/maven-public/</url>
-              <blocked>false</blocked>
-            </mirror>
-          </mirrors>
-        </settings>
-        EOF
-        for jar in libs/*.jar; do
-          filename=$(basename "$jar")
-          artifactId=$(echo "$filename" | sed 's/-1.0-SNAPSHOT.jar//')
-          mvn install:install-file -Dfile="$jar" -DgroupId="com.pd" -DartifactId="$artifactId" -Dversion="1.0-SNAPSHOT" -Dpackaging=jar
-        done
-    - name: Download build artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: backend-target
-        path: target/
-    - name: Run tests
-      run: mvn test
+      - uses: actions/checkout@v3
+      - name: Set up JDK 8
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+      - name: Set up Maven settings
+        run: |
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml << EOF
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                                        http://maven.apache.org/xsd/settings-1.0.0.xsd">
+            <mirrors>
+              <mirror>
+                <id>itheima</id>
+                <mirrorOf>itheima</mirrorOf>
+                <url>http://repo.itheima.net/repository/maven-public/</url>
+                <blocked>false</blocked>
+              </mirror>
+            </mirrors>
+          </settings>
+          EOF
+      - name: Install JARs
+        run: |
+          for jar in libs/*.jar; do
+            filename=$(basename "$jar")
+            artifactId=$(echo "$filename" | sed 's/-1.0-SNAPSHOT.jar//')
+            mvn install:install-file -Dfile="$jar" -DgroupId="com.pd" -DartifactId="$artifactId" -Dversion="1.0-SNAPSHOT" -Dpackaging=jar
+          done
+      - name: Maven Test
+        run: mvn test
 
   package_backend:
     runs-on: ubuntu-latest
-    needs: build_backend
+    needs: test_backend
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 8
-      uses: actions/setup-java@v3
-      with:
-        java-version: '8'
-        distribution: 'temurin'
-    - name: Cache Maven packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
-    - name: Install local libs
-      run: |
-        mkdir -p ~/.m2
-        cat > ~/.m2/settings.xml << EOF
-        <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
-                                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
-          <mirrors>
-            <mirror>
-              <id>itheima</id>
-              <mirrorOf>itheima</mirrorOf>
-              <url>http://repo.itheima.net/repository/maven-public/</url>
-              <blocked>false</blocked>
-            </mirror>
-          </mirrors>
-        </settings>
-        EOF
-        for jar in libs/*.jar; do
-          filename=$(basename "$jar")
-          artifactId=$(echo "$filename" | sed 's/-1.0-SNAPSHOT.jar//')
-          mvn install:install-file -Dfile="$jar" -DgroupId="com.pd" -DartifactId="$artifactId" -Dversion="1.0-SNAPSHOT" -Dpackaging=jar
-        done
-    - name: Download build artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: backend-target
-        path: target/
-    - name: Package
-      run: mvn clean package -DskipTests
-    - name: Upload package artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: backend-packages
-        path: |
-          sms-api/target/
-          sms-manage/target/
-          sms-server/target/
-          sms-sdk/target/
-          sms-entity/target/
+      - uses: actions/checkout@v3
+      - name: Set up JDK 8
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+      - name: Set up Maven settings
+        run: |
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml << EOF
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                                        http://maven.apache.org/xsd/settings-1.0.0.xsd">
+            <mirrors>
+              <mirror>
+                <id>itheima</id>
+                <mirrorOf>itheima</mirrorOf>
+                <url>http://repo.itheima.net/repository/maven-public/</url>
+                <blocked>false</blocked>
+              </mirror>
+            </mirrors>
+          </settings>
+          EOF
+      - name: Install JARs
+        run: |
+          for jar in libs/*.jar; do
+            filename=$(basename "$jar")
+            artifactId=$(echo "$filename" | sed 's/-1.0-SNAPSHOT.jar//')
+            mvn install:install-file -Dfile="$jar" -DgroupId="com.pd" -DartifactId="$artifactId" -Dversion="1.0-SNAPSHOT" -Dpackaging=jar
+          done
+      - name: Maven Package
+        run: mvn clean package -DskipTests
+      - uses: actions/upload-artifact@v3
+        with:
+          name: backend-packages
+          path: |
+            sms-api/target/
+            sms-manage/target/
+            sms-server/target/
+            sms-sdk/target/
+            sms-entity/target/
+
+  deploy_backend:
+    runs-on: ubuntu-latest
+    needs: package_backend
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy backend to server
+        run: echo "Deploy backend to server"
+        # 可在此添加 scp/rsync 等命令
+
+  deploy_frontend:
+    runs-on: ubuntu-latest
+    needs: build_frontend
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy frontend to server
+        run: echo "Deploy frontend to server"
+        # 可在此添加 scp/rsync 等命令
