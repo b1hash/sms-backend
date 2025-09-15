@@ -42,9 +42,9 @@
             </activation>
             <properties>
                 <pom.profile.name>dev</pom.profile.name>
-                <pom.nacos.ip>192.168.158.160</pom.nacos.ip>
+                <pom.nacos.ip>dev.test.37182.pro</pom.nacos.ip>
                 <pom.nacos.port>8848</pom.nacos.port>
-                <pom.nacos.namespace>5c887121-8fca-4600-a937-e589b1c4172c</pom.nacos.namespace>
+                <pom.nacos.namespace>2aad6fec-60d1-4df5-8be7-8926983edcad</pom.nacos.namespace>
             </properties>
         </profile>
 
@@ -53,9 +53,9 @@
             <id>test</id>
             <properties>
                 <pom.profile.name>test</pom.profile.name>
-                <pom.nacos.ip>192.168.158.160</pom.nacos.ip>
+                <pom.nacos.ip>dev.test.37182.pro</pom.nacos.ip>
                 <pom.nacos.port>8848</pom.nacos.port>
-                <pom.nacos.namespace>5c887121-8fca-4600-a937-e589b1c4172c</pom.nacos.namespace>
+                <pom.nacos.namespace>962ad2aa-7c54-47c4-a3bc-db43e0889335</pom.nacos.namespace>
             </properties>
         </profile>
 
@@ -64,9 +64,9 @@
             <id>prod</id>
             <properties>
                 <pom.profile.name>prod</pom.profile.name>
-                <pom.nacos.ip>192.168.158.160</pom.nacos.ip>
+                <pom.nacos.ip>dev.test.37182.pro</pom.nacos.ip>
                 <pom.nacos.port>8848</pom.nacos.port>
-                <pom.nacos.namespace>5c887121-8fca-4600-a937-e589b1c4172c</pom.nacos.namespace>
+                <pom.nacos.namespace>c3a58355-5ba2-48c0-8e63-415ce057ec74</pom.nacos.namespace>
             </properties>
         </profile>
     </profiles>
@@ -134,6 +134,9 @@
                 <groupId>com.pd</groupId>
                 <artifactId>pd-auth-entity</artifactId>
                 <version>${pd.version}</version>
+                <type>jar</type>
+                <scope>system</scope>
+                <systemPath>C:\Users\docker\sms-backend\libs\pd-auth-entity-1.0-SNAPSHOT.jar</systemPath>
             </dependency>
 
             <!-- 从项目中添加依赖 -->
@@ -153,61 +156,89 @@
                 <groupId>com.pd</groupId>
                 <artifactId>pd-tools-common</artifactId>
                 <version>${pd.version}</version>
-                <!--
                 <type>jar</type>
                 <scope>system</scope>
-                <systemPath>${project.basedir}/libs/pd-tools-common-1.0-SNAPSHOT.jar</systemPath>
-                -->
+                <systemPath>C:\Users\docker\sms-backend\libs\pd-tools-common-1.0-SNAPSHOT.jar</systemPath>
             </dependency>
             <dependency>
                 <groupId>com.pd</groupId>
                 <artifactId>pd-tools-core</artifactId>
                 <version>${pd.version}</version>
+                <type>jar</type>
+                <scope>system</scope>
+                <systemPath>C:\Users\docker\sms-backend\libs\pd-tools-core-1.0-SNAPSHOT.jar</systemPath>
             </dependency>
             <dependency>
                 <groupId>com.pd</groupId>
                 <artifactId>pd-tools-database</artifactId>
                 <version>${pd.version}</version>
+                <type>jar</type>
+                <scope>system</scope>
+                <systemPath>C:\Users\docker\sms-backend\libs\pd-tools-database-1.0-SNAPSHOT.jar</systemPath>
             </dependency>
             <dependency>
                 <groupId>com.pd</groupId>
                 <artifactId>pd-tools-dozer</artifactId>
                 <version>${pd.version}</version>
+                <type>jar</type>
+                <scope>system</scope>
+                <systemPath>C:\Users\docker\sms-backend\libs\pd-tools-dozer-1.0-SNAPSHOT.jar</systemPath>
             </dependency>
             <dependency>
                 <groupId>com.pd</groupId>
                 <artifactId>pd-tools-j2cache</artifactId>
                 <version>${pd.version}</version>
+                <type>jar</type>
+                <scope>system</scope>
+                <systemPath>C:\Users\docker\sms-backend\libs\pd-tools-j2cache-1.0-SNAPSHOT.jar</systemPath>
             </dependency>
             <dependency>
                 <groupId>com.pd</groupId>
                 <artifactId>pd-tools-jwt</artifactId>
                 <version>${pd.version}</version>
+                <type>jar</type>
+                <scope>system</scope>
+                <systemPath>C:\Users\docker\sms-backend\libs\pd-tools-jwt-1.0-SNAPSHOT.jar</systemPath>
             </dependency>
             <dependency>
                 <groupId>com.pd</groupId>
                 <artifactId>pd-tools-log</artifactId>
                 <version>${pd.version}</version>
+                <type>jar</type>
+                <scope>system</scope>
+                <systemPath>C:\Users\docker\sms-backend\libs\pd-tools-log-1.0-SNAPSHOT.jar</systemPath>
             </dependency>
             <dependency>
                 <groupId>com.pd</groupId>
                 <artifactId>pd-tools-swagger</artifactId>
                 <version>${pd.version}</version>
+                <type>jar</type>
+                <scope>system</scope>
+                <systemPath>C:\Users\docker\sms-backend\libs\pd-tools-swagger-1.0-SNAPSHOT.jar</systemPath>
             </dependency>
             <dependency>
                 <groupId>com.pd</groupId>
                 <artifactId>pd-tools-user</artifactId>
                 <version>${pd.version}</version>
+                <type>jar</type>
+                <scope>system</scope>
+                <systemPath>C:\Users\docker\sms-backend\libs\pd-tools-user-1.0-SNAPSHOT.jar</systemPath>
             </dependency>
             <dependency>
                 <groupId>com.pd</groupId>
                 <artifactId>pd-tools-valid</artifactId>
                 <version>${pd.version}</version>
+                <type>jar</type>
+                <scope>system</scope>
+                <systemPath>C:\Users\docker\sms-backend\libs\pd-tools-valid-1.0-SNAPSHOT.jar</systemPath>
             </dependency>
             <dependency>
                 <groupId>com.pd</groupId>
                 <artifactId>pd-tools-xss</artifactId>
                 <version>${pd.version}</version>
+                <type>jar</type>
+                <scope>system</scope>
+                <systemPath>C:\Users\docker\sms-backend\libs\pd-tools-xss-1.0-SNAPSHOT.jar</systemPath>
             </dependency>
 
             <!-- 持久层相关 -->

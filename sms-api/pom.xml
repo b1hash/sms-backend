@@ -20,6 +20,10 @@
         </dependency>
         <dependency>
             <groupId>com.pd</groupId>
+            <artifactId>pd-tools-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.pd</groupId>
             <artifactId>pd-tools-dozer</artifactId>
         </dependency>
         <dependency>
@@ -155,6 +159,25 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-json</artifactId>
+        </dependency>
+
+        <!-- OpenFeign for @EnableFeignClients -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+
+        <!-- Druid database connection pool -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- P6Spy for SQL monitoring -->
+        <dependency>
+            <groupId>p6spy</groupId>
+            <artifactId>p6spy</artifactId>
+            <version>3.8.7</version>
         </dependency>
     </dependencies>
 

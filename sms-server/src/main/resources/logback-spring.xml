@@ -3,6 +3,33 @@
 
     <include resource="com/pd/log/logback/pd-defaults.xml"/>
 
+    <!-- Define CONTROLLER_APPENDER and SERVICE_APPENDER before using them -->
+    <appender name="CONTROLLER_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/${spring.application.name}/controller.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/${spring.application.name}/%d{yyyy-MM}/controller-%d{yyyy-MM-dd}-%i.log.gz</fileNamePattern>
+            <maxFileSize>128MB</maxFileSize>
+            <maxHistory>60</maxHistory>
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}:[%5p] [%t:%r] [%logger{50}.%M:%L] --> %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="SERVICE_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/${spring.application.name}/service.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/${spring.application.name}/%d{yyyy-MM}/service-%d{yyyy-MM-dd}-%i.log.gz</fileNamePattern>
+            <maxFileSize>128MB</maxFileSize>
+            <maxHistory>60</maxHistory>
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}:[%5p] [%t:%r] [%logger{50}.%M:%L] --> %msg%n</pattern>
+        </encoder>
+    </appender>
+
     <springProfile name="test,docker,prod">
         <logger name="com.sms.server.controller" additivity="true" level="${log.level.controller}">
             <appender-ref ref="ASYNC_CONTROLLER_APPENDER"/>
