@@ -1,0 +1,160 @@
+stages:
+  - build
+  - test
+  - package
+  - deploy
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+# 后端构建
+build_backend:
+  stage: build
+  image: maven:3.8-openjdk-8
+  tags:
+    - docker
+  before_script:
+    - mkdir -p ~/.m2
+    - |
+      cat > ~/.m2/settings.xml << EOF
+      <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                                    http://maven.apache.org/xsd/settings-1.0.0.xsd">
+        <mirrors>
+          <mirror>
+            <id>itheima</id>
+            <mirrorOf>itheima</mirrorOf>
+            <url>http://repo.itheima.net/repository/maven-public/</url>
+            <blocked>false</blocked>
+          </mirror>
+        </mirrors>
+      </settings>
+      EOF
+  script:
+    - mvn clean compile
+  artifacts:
+    paths:
+      - target/
+    expire_in: 1 hour
+  only:
+    - master
+
+# 前端构建
+build_frontend:
+  stage: build
+  image: node:14
+  tags:
+    - docker
+  script:
+    - cd sms-ui
+    - unzip project-sms-admin-v2-vue-ts.zip
+    - cd project-sms-admin-v2-vue-ts
+    - npm install
+    - npm run build
+  artifacts:
+    paths:
+      - sms-ui/project-sms-admin-v2-vue-ts/dist/
+    expire_in: 1 hour
+  only:
+    - master
+
+# 后端测试
+test_backend:
+  stage: test
+  image: maven:3.8-openjdk-8
+  tags:
+    - docker
+  before_script:
+    - mkdir -p ~/.m2
+    - |
+      cat > ~/.m2/settings.xml << EOF
+      <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                                    http://maven.apache.org/xsd/settings-1.0.0.xsd">
+        <mirrors>
+          <mirror>
+            <id>itheima</id>
+            <mirrorOf>itheima</mirrorOf>
+            <url>http://repo.itheima.net/repository/maven-public/</url>
+            <blocked>false</blocked>
+          </mirror>
+        </mirrors>
+      </settings>
+      EOF
+  script:
+    - mvn test
+  dependencies:
+    - build_backend
+  only:
+    - master
+
+# 后端打包
+package_backend:
+  stage: package
+  image: maven:3.8-openjdk-8
+  tags:
+    - docker
+  before_script:
+    - mkdir -p ~/.m2
+    - |
+      cat > ~/.m2/settings.xml << EOF
+      <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                                    http://maven.apache.org/xsd/settings-1.0.0.xsd">
+        <mirrors>
+          <mirror>
+            <id>itheima</id>
+            <mirrorOf>itheima</mirrorOf>
+            <url>http://repo.itheima.net/repository/maven-public/</url>
+            <blocked>false</blocked>
+          </mirror>
+        </mirrors>
+      </settings>
+      EOF
+  script:
+    - mvn clean package -DskipTests
+  artifacts:
+    paths:
+      - sms-api/target/
+      - sms-manage/target/
+      - sms-server/target/
+      - sms-sdk/target/
+      - sms-entity/target/
+    expire_in: 1 week
+  dependencies:
+    - build_backend
+  only:
+    - master
+
+# 前端部署 (示例：上传到服务器)
+deploy_frontend:
+  stage: deploy
+  image: alpine:latest
+  tags:
+    - docker
+  script:
+    - echo "Deploy frontend to server"
+    # 添加你的部署脚本，例如 scp 或 rsync 到服务器
+  dependencies:
+    - build_frontend
+  only:
+    - master
+  when: manual
+
+# 后端部署 (示例：上传到服务器)
+deploy_backend:
+  stage: deploy
+  image: alpine:latest
+  tags:
+    - docker
+  script:
+    - echo "Deploy backend to server"
+    # 添加你的部署脚本，例如 scp 或 rsync 到服务器
+  dependencies:
+    - package_backend
+  only:
+    - master
+  when: manual
