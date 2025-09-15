@@ -1,0 +1,14 @@
+server:
+  port: 8772
+
+spring:
+  application:
+    name: sms-server
+  profiles:
+    active: dev
+
+logging:
+  level:
+    ROOT: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
