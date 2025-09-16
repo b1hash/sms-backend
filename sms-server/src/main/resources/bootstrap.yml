@@ -22,10 +22,11 @@ spring:
         namespace: ${pd.nacos.namespace}
         shared-dataids: common.yml,mysql.yml
         refreshable-dataids: common.yml
-        enabled: true
+        enabled: false
       discovery:
         server-addr: ${pd.nacos.ip}:${pd.nacos.port}
         namespace: ${pd.nacos.namespace}
+        enabled: false
         metadata:
           management.context-path: ${server.servlet.context-path:}${spring.mvc.servlet.path:}${management.endpoints.web.base-path:}
 

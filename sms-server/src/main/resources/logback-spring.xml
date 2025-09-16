@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <include resource="com/pd/log/logback/pd-defaults.xml"/>
+    <!-- <include resource="com/pd/log/logback/pd-defaults.xml"/> -->
 
     <!-- Define CONTROLLER_APPENDER and SERVICE_APPENDER before using them -->
     <appender name="CONTROLLER_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
